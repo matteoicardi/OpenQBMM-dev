@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,12 +22,23 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::populationBalanceSubModels::aggregationKernels
-    ::differentialForceAggregation
+    Foam::populationBalanceSubModels::aggregationKernels::differentialForceAggregation
 
 Description
-    Differential force aggregation kernel with user defined coefficient 
+    Differential force aggregation kernel with user defined coefficient
     (default Cagg = 1).
+
+    \f[
+        K_a = C_a (\xi_i + \xi_j)^2 |\xi_i^2 - \xi_j^2|
+    \f]
+
+    where
+
+    \vartable
+        C_a         |  Aggregation coefficient [1/s]
+        \xi_i       |  Abscissa of particle i [m]
+        \xi_j       |  Abscissa of particle j [m]
+    \endvartable
 
 SourceFiles
     differentialForceAggregation.C
@@ -65,7 +76,11 @@ public:
     // Constructors
 
         //- Construct from components
-        differentialForceAggregation(const dictionary& dict);
+        differentialForceAggregation
+        (
+            const dictionary& dict,
+            const fvMesh& mesh
+        );
 
 
     //- Destructor
@@ -75,10 +90,11 @@ public:
     // Member Functions
 
         //- Aggregation kernel
-        virtual tmp<volScalarField> Ka
+        virtual scalar Ka
         (
-            const volScalarField& abscissa1,
-            const volScalarField& abscissa2
+            const scalar& abscissa1,
+            const scalar& abscissa2,
+            const label celli
         ) const;
 
 };

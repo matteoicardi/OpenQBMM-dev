@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,10 +22,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::populationBalanceSubModels::daughterDistribution::symmetricFragmentation
+    Foam::populationBalanceSubModels::daughterDistributions::symmetricFragmentation
 
 Description
     Daughter distribution of fragments with symmetric fragmentation.
+
+    The moment source term corresponding to the distribution is:
+
+    \f[
+        \overline{b}_k = 2^{(3-k)/3} \xi^k
+    \f]
+
+    \vartable
+        k           |  Order of the moment [-]
+        \xi         |  Particle size [m]
+    \endvartable
 
 SourceFiles
     symmetricFragmentation.C
@@ -73,10 +84,10 @@ public:
     // Member Functions
 
         //- Moment of the daughter distribution function
-        virtual tmp<volScalarField> mD
+        virtual scalar mD
         (
-            const label order,
-            const volScalarField& abscissa
+            const label& order,
+            const scalar& abscissa
         ) const;
 
 };

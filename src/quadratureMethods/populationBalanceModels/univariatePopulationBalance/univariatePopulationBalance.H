@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -106,6 +106,7 @@ class univariatePopulationBalance
             Foam::populationBalanceSubModels::diffusionModel
         > diffusionModel_;
 
+        //- Nucleation model
         autoPtr
         <
             Foam::populationBalanceSubModels::nucleationModel
@@ -114,13 +115,18 @@ class univariatePopulationBalance
     // Private member functions
 
         //- Calculate aggregation source terms
-        tmp<volScalarField> aggregationSource
+        scalar aggregationSource
         (
-            const volUnivariateMoment& moment
+            const label& momentOrder,
+            const label& celli
         );
 
         //- Calculate Breakup source term
-        tmp<volScalarField> breakupSource(const volUnivariateMoment& moment);
+        scalar breakupSource
+        (
+            const label& momentOrder,
+            const label& celli
+        );
 
         //- Diffusion term
         virtual tmp<fvScalarMatrix> momentDiffusion
@@ -129,17 +135,24 @@ class univariatePopulationBalance
         );
 
         //- Convect moments in phase space
-        virtual tmp<volScalarField> phaseSpaceConvection
+        virtual scalar phaseSpaceConvection
+        (
+            const label& momentOrder,
+            const label& celli
+        );
+
+        //- Calculate implicit source terms
+        virtual tmp<fvScalarMatrix> implicitMomentSource
         (
             const volUnivariateMoment& moment
         );
 
-        //- Calculate source terms
-        virtual tmp<fvScalarMatrix> momentSource
+        //- Calculate source term for moment equation in the specified cell
+        virtual scalar cellMomentSource
         (
-            const volUnivariateMoment& moment
+            label& momentOrder,
+            label& celli
         );
-
 
 public:
 
@@ -154,7 +167,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -163,6 +175,9 @@ public:
     virtual ~univariatePopulationBalance();
 
     // Member Functions
+
+        //- Return the maximum Courant number ensuring moment realizability
+        scalar realizableCo();
 
         //- Solve population balance equation
         void solve();

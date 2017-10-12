@@ -87,10 +87,9 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         ),
-        (name, dict, U, phi)
+        (name, dict, phi)
     );
 
 
@@ -101,7 +100,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -113,7 +111,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -123,6 +120,9 @@ public:
 
 
     // Member Functions
+
+        //- Return the maximum Courant number ensuring moment realizability
+        virtual scalar realizableCo() = 0;
 
         //- Solve mixing model
         virtual void solve() = 0;

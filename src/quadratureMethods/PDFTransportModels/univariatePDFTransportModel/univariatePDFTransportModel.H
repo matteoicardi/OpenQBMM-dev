@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -37,7 +37,8 @@ SourceFiles
 #define univariatePDFTransportModel_H
 
 #include "PDFTransportModel.H"
-#include "univariateQuadratureApproximation.H"
+#include "quadratureApproximations.H"
+#include "univariateMomentAdvection.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -59,6 +60,27 @@ class univariatePDFTransportModel
         //- Name of the univariatePDFTransportModel
         const word name_;
 
+        Switch solveODESource_;
+
+        //- Absolute tolerance for realizable ODE solver
+        scalar ATol_;
+
+        //- Relative tolerance for realizable ODE solver
+        scalar RTol_;
+
+        //- Time-step change factor
+        scalar fac_;
+
+        //- Minimum time-step change factor
+        scalar facMin_;
+
+        //- Maximum time-step change factor
+        scalar facMax_;
+
+        //- Minimum local step in realizable ODE solver
+        label minLocalDt_;
+
+
 protected:
 
     // Protected data
@@ -66,11 +88,8 @@ protected:
         //- Univariate quadrature approximation used to solve PDF transport
         univariateQuadratureApproximation quadrature_;
 
-        //- Velocity field
-        const volVectorField& U_;
-
-        //- Face velocity field
-        const surfaceScalarField& phi_;
+        //- Moment advection
+        autoPtr<univariateMomentAdvection> momentAdvection_;
 
     // Protected member functions
 
@@ -80,26 +99,21 @@ protected:
             const volUnivariateMoment& moment
         ) = 0;
 
-        //- Calculate source terms
-        virtual tmp<fvScalarMatrix> momentSource
+        //- Calculate implicit source terms
+        virtual tmp<fvScalarMatrix> implicitMomentSource
         (
             const volUnivariateMoment& moment
         ) = 0;
 
-        //- Convect moments in phase space
-        virtual tmp<volScalarField> phaseSpaceConvection
+        //- Calculate explicit source terms with realizable ODE solver
+        virtual void explicitMomentSource();
+
+        //- Calculate source term for moment equation in the specified cell
+        virtual scalar cellMomentSource
         (
-            const volUnivariateMoment& moment
+            label& momentOrder,
+            label& celli
         ) = 0;
-
-        //- Calculate explicit convection term in physical space
-        tmp<volScalarField> physicalSpaceConvection
-        (
-            const volUnivariateMoment& moment
-        );
-
-        //- Update fields required to compute kinetic fluxes
-        void updatePhysicalSpaceConvection();
 
 
 public:
@@ -112,7 +126,6 @@ public:
             const word& name,
             const dictionary& dict,
             const fvMesh& mesh,
-            const volVectorField& U,
             const surfaceScalarField& phi,
             const word& support
         );
@@ -128,6 +141,9 @@ public:
 
             //- Returns a const reference to the quadrature approximation
             inline const univariateQuadratureApproximation& quadrature() const;
+
+            //- Return the maximum Courant number ensuring moment realizability
+            inline scalar realizableCo();
 
         //-Edit
 

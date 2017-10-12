@@ -71,7 +71,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -80,6 +79,9 @@ public:
     virtual ~noMixing();
 
     // Member Functions
+
+        //- Return the maximum Courant number ensuring moment realizability
+        scalar realizableCo();
 
         //- Solve mixing model
         void solve();

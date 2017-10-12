@@ -87,10 +87,20 @@ class turbulentMixing
             const volUnivariateMoment& moment
         );
 
-        //- Calculate source terms
-        virtual tmp<fvScalarMatrix> momentSource
+        //- Calculate explicit source terms
+        virtual void explicitMomentSource();
+
+        //- Calculate implicit source terms
+        virtual tmp<fvScalarMatrix> implicitMomentSource
         (
             const volUnivariateMoment& moment
+        );
+
+        //- Calculate source term for moment equation in the specified cell
+        virtual scalar cellMomentSource
+        (
+            label& momentOrder,
+            label& celli
         );
 
 
@@ -107,7 +117,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -116,6 +125,9 @@ public:
     virtual ~turbulentMixing();
 
     // Member Functions
+
+        //- Return the maximum Courant number ensuring moment realizability
+        scalar realizableCo();
 
         //- Solve mixing model
         void solve();

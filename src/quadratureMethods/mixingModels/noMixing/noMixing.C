@@ -48,11 +48,10 @@ Foam::mixingModels::noMixing::noMixing
 (
     const word& name,
     const dictionary& dict,
-    const volVectorField& U,
     const surfaceScalarField& phi
 )
 :
-    mixingModel(name, dict, U, phi),
+    mixingModel(name, dict, phi),
     name_(name)
 {}
 
@@ -68,6 +67,11 @@ Foam::mixingModels::noMixing::~noMixing()
 void Foam::mixingModels::noMixing::solve()
 {
     return;
+}
+
+Foam::scalar Foam::mixingModels::noMixing::realizableCo()
+{
+    return 1.0;
 }
 
 // ************************************************************************* //

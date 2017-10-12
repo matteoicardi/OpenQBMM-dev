@@ -51,12 +51,11 @@ Foam::PDFTransportModels::mixingModels::turbulentMixing::turbulentMixing
 (
     const word& name,
     const dictionary& dict,
-    const volVectorField& U,
     const surfaceScalarField& phi
 )
 :
-    univariatePDFTransportModel(name, dict, U.mesh(), U, phi, "01"),
-    mixingModel(name, dict, U, phi),
+    univariatePDFTransportModel(name, dict, phi.mesh(), phi, "01"),
+    mixingModel(name, dict, phi),
     name_(name),
     mixingKernel_
     (
@@ -106,13 +105,13 @@ Foam::PDFTransportModels::mixingModels::turbulentMixing
             IOobject
             (
                 "gSource",
-                U_.mesh().time().timeName(),
-                U_.mesh(),
+                phi_.mesh().time().timeName(),
+                phi_.mesh(),
                 IOobject::NO_READ,
                 IOobject::NO_WRITE,
                 false
             ),
-            U_.mesh(),
+            phi_.mesh(),
             dimensionedScalar("zero", moment.dimensions()/dimTime, 0.0)
         )
     );
@@ -120,9 +119,12 @@ Foam::PDFTransportModels::mixingModels::turbulentMixing
     return gSource;
 }
 
+void Foam::PDFTransportModels::mixingModels::turbulentMixing
+::explicitMomentSource()
+{}
+
 Foam::tmp<Foam::fvScalarMatrix>
-Foam::PDFTransportModels::mixingModels::turbulentMixing
-::momentSource
+Foam::PDFTransportModels::mixingModels::turbulentMixing::implicitMomentSource
 (
     const volUnivariateMoment& moment
 )
@@ -130,6 +132,22 @@ Foam::PDFTransportModels::mixingModels::turbulentMixing
     const volUnivariateMomentFieldSet& moments = (*this).quadrature().moments();
 
     return mixingKernel_->K(moment, moments);
+}
+
+Foam::scalar
+Foam::PDFTransportModels::mixingModels::turbulentMixing::cellMomentSource
+(
+    label& momentOrder,
+    label& celli
+)
+{
+    return 0.0;
+}
+
+Foam::scalar Foam::PDFTransportModels::mixingModels::turbulentMixing::realizableCo
+()
+{
+    return univariatePDFTransportModel::realizableCo();
 }
 
 void Foam::PDFTransportModels::mixingModels::turbulentMixing::solve

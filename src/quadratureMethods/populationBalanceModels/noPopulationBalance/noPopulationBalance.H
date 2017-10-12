@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -71,7 +71,6 @@ public:
         (
             const word& name,
             const dictionary& dict,
-            const volVectorField& U,
             const surfaceScalarField& phi
         );
 
@@ -80,6 +79,9 @@ public:
     virtual ~noPopulationBalance();
 
     // Member Functions
+
+        //- Return the maximum Courant number ensuring moment realizability
+        scalar realizableCo();
 
         //- Solve population balance equation
         void solve();

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,10 +22,24 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::populationBalanceSubModels::daughterDistribution::erosion
+    Foam::populationBalanceSubModels::daughterDistributions::erosion
 
 Description
     Daughter distribution of fragments for erosion.
+
+    The moment source term corresponding to the distribution is:
+
+    \f[
+        \overline{b}_k = \xi_0^k + (\xi^3 - \xi_0^3)^{1/3}
+    \f]
+
+    where
+
+    \vartable
+        k           |  Order of the moment [-]
+        \xi         |  Particle size [m]
+        \xi_0       |  Primary particle size [m]
+    \endvartable
 
 SourceFiles
     erosion.C
@@ -55,7 +69,7 @@ class erosion
     public daughterDistribution
 {
 private:
-    
+
     // Private data
 
         //- Primary particle size
@@ -81,10 +95,10 @@ public:
     // Member Functions
 
         //- Moment of the daughter distribution function
-        virtual tmp<volScalarField> mD
+        virtual scalar mD
         (
-            const label order,
-            const volScalarField& abscissa
+            const label& order,
+            const scalar& abscissa
         ) const;
 
 };

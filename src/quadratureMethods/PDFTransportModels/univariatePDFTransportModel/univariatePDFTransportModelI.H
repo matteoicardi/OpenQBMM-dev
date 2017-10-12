@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015-2016 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -31,5 +31,10 @@ Foam::PDFTransportModels::univariatePDFTransportModel::quadrature() const
     return quadrature_;
 }
 
+Foam::scalar
+Foam::PDFTransportModels::univariatePDFTransportModel::realizableCo()
+{
+    return momentAdvection_().realizableCo();
+}
 
 // ************************************************************************* //

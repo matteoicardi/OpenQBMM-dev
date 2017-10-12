@@ -8,6 +8,8 @@
 2015-03-09 Alberto Passalacqua: Templated class on the type of field used to
                                 store the moment and on the type of quadrature
                                 node.
+2017-03-26 Alberto Passalacqua: Added the capability to recompute the moment
+                                locally.
 -------------------------------------------------------------------------------
 License
     This file is derivative work of OpenFOAM.
@@ -29,32 +31,32 @@ License
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-template <class fieldType, class nodeType> 
+template <class fieldType, class nodeType>
 const Foam::word& Foam::moment<fieldType, nodeType>::name() const
 {
     return name_;
 }
 
-template <class fieldType, class nodeType> 
+template <class fieldType, class nodeType>
 const Foam::word& Foam::moment<fieldType, nodeType>::keyword() const
 {
     return name();
 }
 
-template <class fieldType, class nodeType> 
+template <class fieldType, class nodeType>
 Foam::label Foam::moment<fieldType, nodeType>::nDimensions() const
 {
     return nDimensions_;
 }
 
-template <class fieldType, class nodeType> 
+template <class fieldType, class nodeType>
 Foam::label Foam::moment<fieldType, nodeType>::order() const
 {
     return order_;
 }
 
-template <class fieldType, class nodeType> 
-const Foam::labelList& 
+template <class fieldType, class nodeType>
+const Foam::labelList&
 Foam::moment<fieldType, nodeType>::cmptOrders() const
 {
     return cmptOrders_;

@@ -33,6 +33,7 @@ Description
 #include "IOmanip.H"
 #include "IFstream.H"
 #include "OFstream.H"
+#include "scalarList.H"
 #include "scalarMatrices.H"
 #include "univariateMomentSet.H"
 #include "extendedMomentInversion.H"
@@ -49,21 +50,21 @@ int main(int argc, char *argv[])
 
     label nMoments = 5;
     word support = "RPlus";
-    univariateMomentSet moments(nMoments, 0.0, "Gauss", support);
+    univariateMomentSet moments(nMoments, support);
 
     // Dirac delta function
-    moments[0] = 1.0;
-    moments[1] = 1.0;
-    moments[2] = 1.0;
-    moments[3] = 1.0;
-    moments[4] = 1.0;
+//     moments[0] = 1.0;
+//     moments[1] = 1.0;
+//     moments[2] = 1.0;
+//     moments[3] = 1.0;
+//     moments[4] = 1.0;
 
 //  Valid moment set
-//    moments[0] = 1.0;
-//    moments[1] = 2.708217669;
-//    moments[2] = 8.951330468;
-//    moments[3] = 35.95258119;
-//    moments[4] = 174.4370267;
+   moments[0] = 1.0;
+   moments[1] = 2.708217669;
+   moments[2] = 8.951330468;
+   moments[3] = 35.95258119;
+   moments[4] = 174.4370267;
 
 //  Unrealizable moment star
 //     moments[0] = 0.567128698550116;
@@ -160,8 +161,8 @@ int main(int argc, char *argv[])
 
     Info << "\nRecovering secondary weights and abscissae." << endl;
 
-    const scalarDiagonalMatrix& pWeights(EQMOM->primaryWeights());
-    const scalarDiagonalMatrix& pAbscissae(EQMOM->primaryAbscissae());
+    const scalarList& pWeights(EQMOM->primaryWeights());
+    const scalarList& pAbscissae(EQMOM->primaryAbscissae());
 
     const scalarRectangularMatrix& sWeights(EQMOM->secondaryWeights());
     const scalarRectangularMatrix& sAbscissae(EQMOM->secondaryAbscissae());

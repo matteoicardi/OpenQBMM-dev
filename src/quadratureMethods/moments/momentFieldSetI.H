@@ -27,14 +27,6 @@ License
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
-// template <class momentType, class nodeType>
-// Foam::label
-// Foam::momentFieldSet<momentType, nodeType>::dimToCmptOrder(label dim) const
-// {
-//     dim = nDimensions_ - dim - 1;
-//
-//     return pow(10, dim);
-// }
 
 template <class momentType, class nodeType>
 momentType& Foam::momentFieldSet<momentType, nodeType>::operator()()
@@ -118,5 +110,10 @@ Foam::label Foam::momentFieldSet<momentType, nodeType>::nDimensions() const
     return nDimensions_;
 }
 
+template <class momentType, class nodeType>
+const Foam::word Foam::momentFieldSet<momentType, nodeType>::support() const
+{
+    return support_;
+}
 
 // ************************************************************************* //

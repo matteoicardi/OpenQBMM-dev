@@ -57,12 +57,12 @@ class constantBreakup
     public breakupKernel
 {
 private:
-    
+
     // Private data
 
         //- Minimum value of the abscissa to apply the model
         dimensionedScalar minAbscissa_;
-    
+
 public:
 
         //- Runtime type information
@@ -72,7 +72,11 @@ public:
     // Constructors
 
         //- Construct from components
-        constantBreakup(const dictionary& dict);
+        constantBreakup
+        (
+            const dictionary& dict,
+            const fvMesh& mesh
+        );
 
 
     //- Destructor
@@ -82,9 +86,10 @@ public:
     // Member Functions
 
         //- Breakup kernel
-        virtual tmp<volScalarField> Kb
+        virtual scalar Kb
         (
-            const volScalarField& abscissa
+            const scalar& abscissa,
+            const label celli
         ) const;
 
 };

@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
-    \\  /    A nd           | Copyright (C) 2015 Alberto Passalacqua
+    \\  /    A nd           | Copyright (C) 2015-2017 Alberto Passalacqua
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -52,10 +52,11 @@ namespace aggregationKernels
 Foam::populationBalanceSubModels::aggregationKernels::sumAggregation
 ::sumAggregation
 (
-    const dictionary& dict
+    const dictionary& dict,
+    const fvMesh& mesh
 )
 :
-    aggregationKernel(dict)
+    aggregationKernel(dict, mesh)
 {}
 
 
@@ -68,14 +69,15 @@ Foam::populationBalanceSubModels::aggregationKernels::sumAggregation
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::tmp<Foam::volScalarField>
+Foam::scalar
 Foam::populationBalanceSubModels::aggregationKernels::sumAggregation::Ka
 (
-    const volScalarField& abscissa1,
-    const volScalarField& abscissa2
+    const scalar& abscissa1,
+    const scalar& abscissa2,
+    const label celli
 ) const
-{   
-    return Ca_*(pow3(abscissa1) + pow3(abscissa2));
+{
+    return Ca_.value()*(pow3(abscissa1) + pow3(abscissa2));
 }
 
 // ************************************************************************* //

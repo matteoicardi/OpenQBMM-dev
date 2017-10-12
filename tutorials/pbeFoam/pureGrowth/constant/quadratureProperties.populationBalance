@@ -15,6 +15,33 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+fieldMomentInversion    extendedFieldMomentInversion;
+
+extendedMomentInversion
+{
+    extendedMomentInversion     lognormal;
+
+    maxSigmaIter        1000;
+    momentsTol          1.0e-6;
+    sigmaTol            1.0e-8;
+    targetFunctionTol   1.0e-8;
+
+    basicQuadrature
+    {
+        univariateMomentInversion   Gauss;
+    }
+}
+
+momentAdvection
+{
+    univariateMomentAdvection   firstOrderKinetic;
+
+    basicMomentInversion
+    {
+        univariateMomentInversion GaussRadau;
+    }
+}
+
 moments
 (
     (0)
@@ -27,22 +54,9 @@ moments
 nodes
 (
     node0
-    {
-        nSecondaryNodes 1;
-    }
+    {}
     node1
-    {
-        nSecondaryNodes 1;
-    }
+    {}
 );
 
-extendedMomentInversionCoeff
-{
-    extendedMomentInversion     lognormal;
-
-    maxSigmaIter        1000;
-    momentsTol          1.0e-6;
-    sigmaTol            1.0e-8;
-    targetFunctionTol   1.0e-8;
-}
 // ************************************************************************* //

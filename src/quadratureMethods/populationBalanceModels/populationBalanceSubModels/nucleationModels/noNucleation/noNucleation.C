@@ -62,35 +62,22 @@ Foam::populationBalanceSubModels::nucleationModels::noNucleation::noNucleation
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-Foam::populationBalanceSubModels::nucleationModels::noNucleation::~noNucleation()
+Foam::populationBalanceSubModels::nucleationModels::noNucleation
+::~noNucleation()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-Foam::tmp<Foam::volScalarField>
+Foam::scalar
 Foam::populationBalanceSubModels::nucleationModels::noNucleation
-::nucleationSource(const volUnivariateMoment& moment) const
+::nucleationSource
+(
+    const label& momentOrder,
+    const label celli
+) const
 {
-    tmp<volScalarField> noNucl
-    (
-        new volScalarField
-        (
-            IOobject
-            (
-                "noNucl",
-                moment.mesh().time().timeName(),
-                moment.mesh(),
-                IOobject::NO_READ,
-                IOobject::NO_WRITE,
-                false
-            ),
-            moment.mesh(),
-            dimensionedScalar("zero", moment.dimensions()/dimTime, 0.0)
-        )
-    );
-
-    return noNucl;
+    return 0.0;
 }
 
 // ************************************************************************* //

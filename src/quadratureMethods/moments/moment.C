@@ -14,6 +14,8 @@
                                 standard and extended nodes.
 2015-06-13 Alberto Passalacqua: Introduced autoPtr to the PtrList of nodes to
                                 improve initialization of nodes.
+2017-03-26 Alberto Passalacqua: Added the capability to recompute the moment
+                                locally.
 -------------------------------------------------------------------------------
 License
     This file is derivative work of OpenFOAM.
@@ -141,34 +143,28 @@ void Foam::moment<fieldType, nodeType>::update()
 
     const PtrList<nodeType>& nodes = nodes_();
 
-    bool extendedNode = nodes[0].extended();
-
-    // If nodes do not have extended status, only use primary quadrature.
-    if (!extendedNode)
+    // If nodes are not of extended type, only use primary quadrature.
+    if (!nodes[0].extended())
     {
         forAll(nodes, pNodei)
         {
             const nodeType& node = nodes[pNodei];
+            fieldType m = node.primaryWeight();
 
-            if (!node.extended())
+            for (label cmpt = 0; cmpt < nDimensions_; cmpt++)
             {
-                fieldType m = node.primaryWeight();
+                const label cmptMomentOrder = cmptOrders()[cmpt];
 
-                for (label cmpt = 0; cmpt < nDimensions_; cmpt++)
-                {
-                    const label cmptMomentOrder = cmptOrders()[cmpt];
+                tmp<fieldType> abscissaCmpt
+                        = node.primaryAbscissa().component(cmpt);
 
-                    tmp<fieldType> abscissaCmpt
-                            = node.primaryAbscissa().component(cmpt);
+                tmp<fieldType> mPow = m*pow(abscissaCmpt, cmptMomentOrder);
+                m.dimensions().reset(mPow().dimensions());
 
-                    tmp<fieldType> mPow = m*pow(abscissaCmpt, cmptMomentOrder);
-                    m.dimensions().reset(mPow().dimensions());
-
-                    m == mPow;
-                }
-
-                *this == *this + m;
+                m == mPow;
             }
+
+            *this == *this + m;
         }
 
         return;
@@ -178,7 +174,6 @@ void Foam::moment<fieldType, nodeType>::update()
     forAll(nodes, pNodei)
     {
         const nodeType& node = nodes[pNodei];
-
         const fieldType& pW = node.primaryWeight();
 
         for (label sNodei = 0; sNodei < node.nSecondaryNodes(); sNodei++)
@@ -193,9 +188,7 @@ void Foam::moment<fieldType, nodeType>::update()
                         = node.secondaryAbscissae()[sNodei].component(cmpt);
 
                 tmp<fieldType> mPow = m*pow(abscissaCmpt, cmptMomentOrder);
-
                 m.dimensions().reset(mPow().dimensions());
-
                 m == mPow;
             }
 
@@ -204,5 +197,65 @@ void Foam::moment<fieldType, nodeType>::update()
     }
 }
 
+template <class fieldType, class nodeType>
+void Foam::moment<fieldType, nodeType>::updateLocalMoment(label elemi)
+{
+    // Resetting the moment to zero
+    scalar moment = 0;
+
+    const PtrList<nodeType>& nodes = nodes_();
+
+    // If nodes are not of extended type, only use primary quadrature.
+    if (!nodes[0].extended())
+    {
+        forAll(nodes, pNodei)
+        {
+            const nodeType& node = nodes[pNodei];
+            scalar m = node.primaryWeight()[elemi];
+
+            for (label cmpt = 0; cmpt < nDimensions_; cmpt++)
+            {
+                const label cmptMomentOrder = cmptOrders()[cmpt];
+
+                const scalar abscissaCmpt
+                        = node.primaryAbscissa().component(cmpt)()[elemi];
+
+                m *= pow(abscissaCmpt, cmptMomentOrder);
+            }
+
+            moment += m;
+        }
+
+        (*this)[elemi] = moment;
+
+        return;
+    }
+
+    // Extended quadrature case
+    forAll(nodes, pNodei)
+    {
+        const nodeType& node = nodes[pNodei];
+        const scalar pW = node.primaryWeight()[elemi];
+
+        for (label sNodei = 0; sNodei < node.nSecondaryNodes(); sNodei++)
+        {
+            scalar m = pW*node.secondaryWeights()[sNodei][elemi];
+
+            for (label cmpt = 0; cmpt < nDimensions_; cmpt++)
+            {
+                const label cmptMomentOrder = cmptOrders()[cmpt];
+
+                const scalar abscissaCmpt
+                    = node.secondaryAbscissae()[sNodei].component(cmpt)()[elemi];
+
+                m *= pow(abscissaCmpt, cmptMomentOrder);
+            }
+
+            moment += m;
+        }
+    }
+
+    (*this)[elemi] = moment;
+}
 
 // ************************************************************************* //

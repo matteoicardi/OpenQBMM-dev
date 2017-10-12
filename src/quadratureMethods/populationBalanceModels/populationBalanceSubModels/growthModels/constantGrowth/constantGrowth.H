@@ -5,6 +5,8 @@
     \\  /    A nd           | Copyright (C) 2015 Matteo Icardi
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
+2017-03-28 Alberto Passalacqua: Adapted to single scalar calculation.
+-------------------------------------------------------------------------------
 License
     This file is derivative work of OpenFOAM.
 
@@ -26,8 +28,9 @@ Class
 
 Description
     Constant growth model. The value of the constant is read from dictionary
-    or assumed equal to 1. The minimum and maximum value of the abscissa to which the
-    model is applied can be defined by the user or it is assumed to be 1e-10 and 1e10.
+    or assumed equal to 1. The minimum and maximum value of the abscissa to
+    which the model is applied can be defined by the user or it is assumed to
+    be 1.0e-10 and 1.0e10.
 
 SourceFiles
     constantGrowth.C
@@ -57,7 +60,7 @@ class constantGrowth
     public growthModel
 {
 private:
-    
+
     // Private data
 
         //- Minimum value of the abscissa to apply the model
@@ -65,7 +68,7 @@ private:
 
         //- Maximum value of the abscissa to apply the model
         dimensionedScalar maxAbscissa_;
-    
+
 public:
 
         //- Runtime type information
@@ -85,9 +88,9 @@ public:
     // Member Functions
 
         //- Growth model
-        virtual tmp<volScalarField> Kg
+        virtual scalar Kg
         (
-            const volScalarField& abscissa
+            const scalar& abscissa
         ) const;
 
 };

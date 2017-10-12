@@ -22,17 +22,23 @@
 * extendedMomentInversion
     Example of use of the extendedMomentInversion class.
 
-* multivariateMomentInversion
-    Example of use of the multivariateMomentInversion class.
+* conditionalMomentInversion
+    Example of use of the conditionalMomentInversion class.
+
+* populationBalanceModel
+    Example of use of the populationBalanceModel class.
+
+* univariateMomentInversion
+    Test cases to verify moment advection schemes.
+
+* univariateMomentInversion
+    Example of use of the univariateMomentInversion class.
 
 * univariateMomentSet
     Example of use of the univariateMomentSet class.
 
 * univariateQuadratureApproximation
     Example of use of the univariateQuadratureApproximation class.
-
-* populationBalanceModel
-    Example of use of the populationBalanceModel class.
 
 * Vandermonde
     Example of use of the Vandermonde class.

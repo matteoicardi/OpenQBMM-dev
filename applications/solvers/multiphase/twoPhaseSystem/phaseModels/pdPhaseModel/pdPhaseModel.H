@@ -76,6 +76,9 @@ class pdPhaseModel
         //- QuadratureApproximation
         monoKineticQuadratureApproximation quadrature_;
 
+        //- Relative change in first size moment
+        volScalarField ddtM1_;
+
         //- Number of nodes
         const label nNodes_;
 
@@ -108,7 +111,10 @@ class pdPhaseModel
         autoPtr<bubbleBreakupKernel> breakupKernel_;
 
         //- Daughter distribution
-        autoPtr<populationBalanceSubModels::daughterDistribution> daughterDistribution_;
+        autoPtr
+        <
+            populationBalanceSubModels::daughterDistribution
+        > daughterDistribution_;
 
 
     // Private member functions

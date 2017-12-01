@@ -10,36 +10,37 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      turbulenceProperties.water;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 15;
+simulationType  LES;
 
-method          scotch;
-
-simpleCoeffs
+RAS
 {
-    n               (1 12 1);
-    delta           0.001;
-}
+    RASModel mixtureKEpsilon;
 
-hierarchicalCoeffs
+    turbulence      on;
+    printCoeffs     on;
+
+    mixtureKEpsilonCoeffs
+    {
+        Cp  0;
+        C3  0;
+    }
+}
+LES
 {
-    n               (1 1 1);
-    delta           0.001;
-    order           xyz;
+    LESModel Smagorinsky;
+
+    turbulence      on;
+    printCoeffs     on;
+
+    delta           cubeRootVol;
+
+    cubeRootVolCoeffs
+    {
+    }
 }
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
-
 // ************************************************************************* //

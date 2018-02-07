@@ -84,5 +84,8 @@ doc/Doxygen/DTAGS
 
 # Ignore the test directory
 /tutorialsTest
-
+[1-9]*
+processor[0-9]*
+dynamicCode
+log.*
 # end-of-file

@@ -43,12 +43,6 @@ Description
         Wiley & Sons, 1997
     \endverbatim
 
-    \verbatim
-        "Orthogonal Polynomials: Computational and Approximation"
-        W Gautschi
-        Oxford University Press, USA, 2004
-    \endverbatim
-
 SourceFiles
     betaEQMOM.C
 
@@ -136,6 +130,9 @@ public:
 
         //- Compute maximum value of sigma to ensure realizability
         virtual scalar sigmaMax(univariateMomentSet& moments);
+
+        //- Return the sum of the kernel density functions at a field of points
+        virtual tmp<scalarField> f(const scalarField& x) const;
 
 };
 

@@ -52,6 +52,8 @@ void Foam::pdPhaseModel::updateVelocity()
     U_.correctBoundaryConditions();
 
     phiPtr_() = fvc::flux(U_);
+    alphaPhi_ = fvc::interpolate(*this)*phiPtr_();
+    alphaRhoPhi_ = fvc::interpolate(rho())*alphaPhi_;
 }
 
 
@@ -593,7 +595,7 @@ void Foam::pdPhaseModel::correct()
                     (
                         node.primaryAbscissa()*6.0
                        /(rho()*Foam::constant::mathematical::pi)
-                      + dimensionedScalar("SMALL", dimVolume, SMALL),
+                      + dimensionedScalar("smallVolume", dimVolume, SMALL),
                         1.0/3.0
                     ),
                     minD_
@@ -923,8 +925,12 @@ void Foam::pdPhaseModel::averageTransport(const PtrList<fvVectorMatrix>& AEqns)
         volScalarField alphaRhoi
         (
             "alphaRhoi",
-            quadrature_.nodes()[nodei].primaryAbscissa()
-           *quadrature_.nodes()[nodei].primaryWeight()
+            Foam::max
+            (
+                quadrature_.nodes()[nodei].primaryAbscissa()
+               *quadrature_.nodes()[nodei].primaryWeight(),
+                residualAlpha_*rho()
+            )
         );
 
         // Solve for velocities using acceleration terms
